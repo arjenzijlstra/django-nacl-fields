@@ -1,3 +1,1 @@
-__version__ = '1.1.2'
-
-from .fields import *
+__version__ = '2.0.0'
