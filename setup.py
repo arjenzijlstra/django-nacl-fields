@@ -6,7 +6,7 @@ from setuptools import setup
 import re
 
 
-with open('encrypted_fields/__init__.py', 'r') as init_file:
+with open('naclencryptedfields/__init__.py', 'r') as init_file:
     version = re.search(
         '^__version__ = [\'"]([^\'"]+)[\'"]',
         init_file.read(),
@@ -15,19 +15,19 @@ with open('encrypted_fields/__init__.py', 'r') as init_file:
 
 
 setup(
-    name='django-encrypted-fields',
+    name='nacl-encrypted-fields',
     description=(
-        'This is a collection of Django Model Field classes '
-        'that are encrypted using NaCl.'
+        'This is a collection of Django Model Field classes that are encrypted'
+        ' using NaCl.'
     ),
-    url='http://github.com/defrex/django-encrypted-fields/',
-    license='MIT',
-    author='Aron Jones',
-    author_email='aron.jones@gmail.com',
-    packages=['encrypted_fields'],
+    url='https://gitlab.poolvos.nl/arjen/nacl-encrypted-fields',
+    license='TODO',
+    author='Arjen T. Zijlstra',
+    author_email='az@warpnet.nl',
+    packages=['naclencryptedfields'],
     version=version,
     install_requires=[
         'Django>=2.0',
-        'PyNaCl>=1.2.1',
+        'PyNaCl>=1.3.0',
     ],
 )
