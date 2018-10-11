@@ -1,5 +1,5 @@
 
-from encrypted_fields.backends.cryptowrapper import CryptoWrapper
+from naclencryptedfields.backends.cryptowrapper import CryptoWrapper
 
 import base64
 

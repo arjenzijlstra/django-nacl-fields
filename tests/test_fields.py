@@ -1,22 +1,14 @@
-# -*- coding: utf-8 -*-
 
 import re
-import unittest
 
-import django
-from django.conf import settings
 from django.db import connection
 from django.test import TestCase
 from django.utils import timezone
 
 from tests.models import TestModel
-from tests.backends.testcryptowrapper import TestCryptoWrapper
 
 
-class FieldsTest(TestCase):
-	IS_POSTGRES = settings.DATABASES['default']['ENGINE'] == \
-		'django.db.backends.postgresql_psycopg2'
-
+class TestFields(TestCase):
 	def get_db_value(self, field, model_id):
 		cursor = connection.cursor()
 		cursor.execute(
@@ -38,19 +30,6 @@ class FieldsTest(TestCase):
 
 		fresh_model = TestModel.objects.get(id=model.id)
 		self.assertEqual(fresh_model.custom_crypter_char, plaintext)
-
-	def test_prefix_char_field_encrypted(self):
-		plaintext = 'Oh hi, test reader!'
-
-		model = TestModel()
-		model.prefix_char = plaintext
-		model.save()
-
-		ciphertext = self.get_db_value('prefix_char', model.id)
-
-		self.assertNotEqual(plaintext, ciphertext)
-		self.assertTrue('test' not in ciphertext)
-		self.assertTrue(ciphertext.startswith('ENCRYPTED:::'))
 
 	def test_char_field_encrypted(self):
 		plaintext = 'Oh hi, test reader!'
@@ -82,14 +61,6 @@ class FieldsTest(TestCase):
 		fresh_model = TestModel.objects.get(id=model.id)
 		self.assertEqual(fresh_model.char, plaintext)
 
-	def test_short_char_field_encrypted(self):
-		""" Test the max_length validation of an encrypted char field """
-		plaintext = 'Oh hi, test reader!'
-
-		model = TestModel()
-		model.short_char = plaintext
-		self.assertRaises(ValueError, model.save)
-
 	def test_text_field_encrypted(self):
 		plaintext = 'Oh hi, test reader!' * 10
 
@@ -106,34 +77,34 @@ class FieldsTest(TestCase):
 		self.assertEqual(fresh_model.text, plaintext)
 
 	def test_datetime_field_encrypted(self):
-		plaintext = timezone.now()
+		plaindate = timezone.now()
 
 		model = TestModel()
-		model.datetime = plaintext
+		model.datetime = plaindate
 		model.save()
 
 		ciphertext = self.get_db_value('datetime', model.id)
 
-		# Django's normal date serialization format
+		# Django's date serialization format
 		self.assertTrue(re.search('^\d\d\d\d-\d\d-\d\d', ciphertext) is None)
 
 		fresh_model = TestModel.objects.get(id=model.id)
-		self.assertEqual(fresh_model.datetime, plaintext)
+		self.assertEqual(fresh_model.datetime, plaindate)
 
 	def test_integer_field_encrypted(self):
-		plaintext = 42
+		plainint = 42
 
 		model = TestModel()
-		model.integer = plaintext
+		model.integer = plainint
 		model.save()
 
 		ciphertext = self.get_db_value('integer', model.id)
 
-		self.assertNotEqual(plaintext, ciphertext)
-		self.assertNotEqual(plaintext, str(ciphertext))
+		self.assertNotEqual(plainint, ciphertext)
+		self.assertNotEqual(plainint, str(ciphertext))
 
 		fresh_model = TestModel.objects.get(id=model.id)
-		self.assertEqual(fresh_model.integer, plaintext)
+		self.assertEqual(fresh_model.integer, plainint)
 
 	def test_date_field_encrypted(self):
 		plaindate = timezone.now().date()
@@ -149,19 +120,19 @@ class FieldsTest(TestCase):
 		self.assertEqual(fresh_model.date, plaindate)
 
 	def test_float_field_encrypted(self):
-		plaintext = 42.44
+		plainfloat = 42.44
 
 		model = TestModel()
-		model.floating = plaintext
+		model.floating = plainfloat
 		model.save()
 
 		ciphertext = self.get_db_value('floating', model.id)
 
-		self.assertNotEqual(plaintext, ciphertext)
-		self.assertNotEqual(plaintext, str(ciphertext))
+		self.assertNotEqual(plainfloat, ciphertext)
+		self.assertNotEqual(plainfloat, str(ciphertext))
 
 		fresh_model = TestModel.objects.get(id=model.id)
-		self.assertEqual(fresh_model.floating, plaintext)
+		self.assertEqual(fresh_model.floating, plainfloat)
 
 	def test_email_field_encrypted(self):
 		plaintext = 'aron.jones@gmail.com'  # my email address, btw
@@ -179,15 +150,15 @@ class FieldsTest(TestCase):
 		self.assertEqual(fresh_model.email, plaintext)
 
 	def test_boolean_field_encrypted(self):
-		plaintext = True
+		plainbool = True
 
 		model = TestModel()
-		model.boolean = plaintext
+		model.boolean = plainbool
 		model.save()
 
 		ciphertext = self.get_db_value('boolean', model.id)
 
-		self.assertNotEqual(plaintext, ciphertext)
+		self.assertNotEqual(plainbool, ciphertext)
 		self.assertNotEqual(True, ciphertext)
 		self.assertNotEqual('True', ciphertext)
 		self.assertNotEqual('true', ciphertext)
@@ -196,24 +167,4 @@ class FieldsTest(TestCase):
 		self.assertTrue(not isinstance(ciphertext, bool))
 
 		fresh_model = TestModel.objects.get(id=model.id)
-		self.assertEqual(fresh_model.boolean, plaintext)
-
-	@unittest.skipIf(django.VERSION < (1, 7), "Issue exists in django 1.7+")
-	@unittest.skipIf(not IS_POSTGRES, "Issue exists for postgresql")
-	def test_integerfield_validation_in_django_1_7_passes_successfully(self):
-		plainint = 1111
-
-		obj = TestModel()
-		obj.integer = plainint
-
-		# see https://github.com/defrex/django-encrypted-fields/issues/7
-		obj.full_clean()
-		obj.save()
-
-		ciphertext = self.get_db_value('integer', obj.id)
-
-		self.assertNotEqual(plainint, ciphertext)
-		self.assertNotEqual(plainint, str(ciphertext))
-
-		fresh_model = TestModel.objects.get(id=obj.id)
-		self.assertEqual(fresh_model.integer, plainint)
+		self.assertEqual(fresh_model.boolean, plainbool)
