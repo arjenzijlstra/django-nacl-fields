@@ -1,59 +1,71 @@
-[![Build Status](https://travis-ci.org/defrex/django-encrypted-fields.png)](https://travis-ci.org/defrex/django-encrypted-fields)
-[![Pypi Package](https://badge.fury.io/py/django-encrypted-fields.png)](http://badge.fury.io/py/django-encrypted-fields)
+# NaCl Encrypted Fields
 
-### Django Encrypted Fields
+This is a collection of Django Model Field classes that are encrypted using [PyNaCl](https://github.com/pyca/pynacl). This package is largely based on [django-encrypted-fields](https://github.com/defrex/django-encrypted-fields), which makes use of the outdated Keyczar library to encrypt fields. Besides that, it is inspired by [django-fernet-field](https://github.com/orcasgit/django-fernet-fields).
 
-This is a collection of Django Model Field classes that are encrypted using [Keyczar](http://www.keyczar.org/).
 
-#### About Keyczar
+## About PyNaCl
 
-[Keyczar](http://www.keyczar.org/) is a crypto library that exposes a simple API by letting the user set things like the algorithm and key size right in the keyfile. It also provides for things like expiring old keys and cycling in new ones.
+[PyNaCl](https://github.com/pyca/pynacl) is a Python binding to (libsodium)[https://github.com/jedisct1/libsodium], which is a fork of the (Networking and Cryptography library)[https://nacl.cr.yp.to]. These libraries have a stated goal of improving usability, security and speed.
 
-#### Getting Started
+
+## Getting Started
+TODO
+
 ```shell
-$ pip install django-encrypted-fields
+~ pip install nacl-encrypted-fields
 ```
-Create a basic keyczar keyset. `AES-256` in this case.
+
+Create a key to be used for encryption.
 ```shell
-$ mkdir fieldkeys
-$ keyczart create --location=fieldkeys --purpose=crypt
-$ keyczart addkey --location=fieldkeys --status=primary --size=256
+~ python manage.py createkey
+Put the following line in your settings.py:
+
+NACL_FIELDS_KEY = 'cGa9QJDY/FJhbITXHnrIqlgyeLDS04/WqWtgqPEIU4A='
 ```
+
 In your `settings.py`
 ```python
-ENCRYPTED_FIELDS_KEYDIR = '/path/to/fieldkeys'
+NACL_FIELDS_KEY = 'cGa9QJDY/FJhbITXHnrIqlgyeLDS04/WqWtgqPEIU4A='
 ```
-Then, in `models.py`
-```python
-from encrypted_fields import EncryptedTextField
 
-class MyModel(models.Model):
-    text_field = EncryptedTextField()
-```
-Use your model as normal and your data will be encrypted in the database.
-
-_Warning:_ Once the data is encrypted, it can no longer to used to query or sort. In SQL, these will all look like text fields with random noise in them (which is what you want).
-
-#### Available Fields
-
-Currently build in and unit-tested fields. They have the same APIs as their non-encrypted counterparts.
-
-- `EncryptedCharField`
-- `EncryptedTextField`
-- `EncryptedDateTimeField`
-- `EncryptedIntegerField`
-- `EncryptedFloatField`
-- `EncryptedEmailField`
-- `EncryptedBooleanField`
-
-#### Encrypt All The Fields!
-
-Making new fields is easy! Django Encrypted Fields uses a handy mixin to make upgrading pre-existing fields quite easy.
+Then, in your `models.py`
 ```python
 from django.db import models
-from encrypted_fields import EncryptedFieldMixin
+from naclencryptedfields import NaClEncryptedTextField
 
-class EncryptedIPAddressField(EncryptedFieldMixin, models.IPAddressField):
+
+class MyModel(models.Model):
+    text_field = NaClEncryptedTextField()
+```
+
+Use your model as normal and your data will be encrypted in the database.
+
+**Note:** Encrypted data cannot be used to query or sort. In SQL, these will all look like text fields with random text.
+
+
+## Available Fields
+
+Currently build in and unit-tested fields.
+
+- `NaClEncryptedCharField`
+- `NaClEncryptedTextField`
+- `NaClEncryptedDateTimeField`
+- `NaClEncryptedIntegerField`
+- `NaClEncryptedFloatField`
+- `NaClEncryptedEmailField`
+- `NaClEncryptedBooleanField`
+
+
+## Encrypt Your Own Fields
+
+Making new fields can be done by using the build-in NaClEncryptedFieldMixin:
+```python
+from django.db import models
+from naclencryptedfields import NaClEncryptedFieldMixin
+
+
+class EncryptedIPAddressField(NaClEncryptedFieldMixin, models.IPAddressField):
     pass
 ```
-Please report an issues you encounter when trying this, since I've only tested it with the fields above.
+
+Please report any issues you encounter when trying this.
