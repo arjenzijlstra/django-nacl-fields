@@ -6,16 +6,12 @@ from django.utils.functional import cached_property
 from naclencryptedfields.backends.naclwrapper import NaClWrapper
 
 
-class NaClEncryptedFieldException(Exception):
-	pass
-
-
 class NaClEncryptedFieldMixin(object):
 	"""
 	NaClEncryptedFieldMixin will use PyNaCl to encrypt/decrypt data that is
 	being put in/out of the database into application Django model fields. This
 	package is largely based on the django-encrypted-fields package, which makes
-	use of the outdated Keyczar library to encrypt fields, but
+	use of the outdated Keyczar library to encrypt fields.
 
 	There are three options to use this mixin.
 
