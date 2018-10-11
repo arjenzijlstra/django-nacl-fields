@@ -47,13 +47,13 @@ Use your model as normal and your data will be encrypted in the database.
 
 Currently build in and unit-tested fields.
 
-- `NaClEncryptedCharField`
-- `NaClEncryptedTextField`
-- `NaClEncryptedDateTimeField`
-- `NaClEncryptedIntegerField`
-- `NaClEncryptedFloatField`
-- `NaClEncryptedEmailField`
-- `NaClEncryptedBooleanField`
+-  `NaClEncryptedCharField`
+-  `NaClEncryptedTextField`
+-  `NaClEncryptedDateTimeField`
+-  `NaClEncryptedIntegerField`
+-  `NaClEncryptedFloatField`
+-  `NaClEncryptedEmailField`
+-  `NaClEncryptedBooleanField`
 
 
 ## Encrypt Your Own Fields
@@ -69,3 +69,14 @@ class EncryptedIPAddressField(NaClEncryptedFieldMixin, models.IPAddressField):
 ```
 
 Please report any issues you encounter when trying this.
+
+
+## ToDo List
+
+*  Add License
+*  Add salt per field
+
+## References
+
+*  https://github.com/defrex/django-encrypted-fields
+*  https://github.com/orcasgit/django-fernet-fields
