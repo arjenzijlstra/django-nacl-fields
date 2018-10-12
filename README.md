@@ -18,8 +18,7 @@ TODO
 Create a key to be used for encryption.
 ```shell
 ~ python manage.py createkey
-Put the following line in your settings.py:
-
+# put the following line in your settings.py:
 NACL_FIELDS_KEY = 'cGa9QJDY/FJhbITXHnrIqlgyeLDS04/WqWtgqPEIU4A='
 ```
 
@@ -74,7 +73,6 @@ Please report any issues you encounter when trying this.
 ## ToDo List
 
 *  Add License
-*  Add salt per field
 
 ## References
 

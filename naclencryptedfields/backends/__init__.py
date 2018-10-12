@@ -1,2 +1,1 @@
-
-from .naclwrapper import NaClWrapper  # noqa: F401
+from naclencryptedfields.backends.naclwrapper import NaClWrapper

@@ -1,5 +1,9 @@
 
-from .cryptowrapper import CryptoWrapper
+from naclencryptedfields.backends```shell
+~ python manage.py createkey
+# put the following line in your settings.py:
+NACL_FIELDS_KEY = 'cGa9QJDY/FJhbITXHnrIqlgyeLDS04/WqWtgqPEIU4A='
+```.cryptowrapper import CryptoWrapper
 
 import base64
 
