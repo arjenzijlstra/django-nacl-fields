@@ -20,16 +20,16 @@ class TestFields(TestCase):
 		plaintext = 'Oh hi, test reader!'
 
 		model = TestModel()
-		model.custom_crypter_char = plaintext
+		model.custom_crypto_char = plaintext
 		model.save()
 
-		ciphertext = self.get_db_value('custom_crypter_char', model.id)
+		ciphertext = self.get_db_value('custom_crypto_char', model.id)
 
 		self.assertNotEqual(plaintext, ciphertext)
 		self.assertTrue('test' not in ciphertext)
 
 		fresh_model = TestModel.objects.get(id=model.id)
-		self.assertEqual(fresh_model.custom_crypter_char, plaintext)
+		self.assertEqual(fresh_model.custom_crypto_char, plaintext)
 
 	def test_char_field_encrypted(self):
 		plaintext = 'Oh hi, test reader!'
@@ -135,7 +135,7 @@ class TestFields(TestCase):
 		self.assertEqual(fresh_model.floating, plainfloat)
 
 	def test_email_field_encrypted(self):
-		plaintext = 'aron.jones@gmail.com'  # my email address, btw
+		plaintext = 'test@test.nl'
 
 		model = TestModel()
 		model.email = plaintext
@@ -144,7 +144,7 @@ class TestFields(TestCase):
 		ciphertext = self.get_db_value('email', model.id)
 
 		self.assertNotEqual(plaintext, ciphertext)
-		self.assertTrue('aron' not in ciphertext)
+		self.assertTrue('test' not in ciphertext)
 
 		fresh_model = TestModel.objects.get(id=model.id)
 		self.assertEqual(fresh_model.email, plaintext)

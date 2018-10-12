@@ -6,7 +6,7 @@ DATABASES = {
 	},
 }
 
-SECRET_KEY = 'r4nD0Mp4sSw0rD'
+SECRET_KEY = 'jw1fk!h%v#b4&-+2wq5d6v#$4@u1-lh+(i)kxj--7pw7!59&r+'
 
 INSTALLED_APPS = (
 	'tests',

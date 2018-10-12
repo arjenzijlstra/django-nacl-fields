@@ -7,16 +7,21 @@ import nacl.pwhash
 import nacl.utils
 import nacl.secret
 
+from django.core.exceptions import ImproperlyConfigured
+
+
+class NaClWrapperException(ImproperlyConfigured):
+	pass
+
 
 # Simple wrapper around PyNaCl to standardise the initialization of the box
 # object and allow for others to extend as needed.
 class NaClWrapper(CryptoWrapper):
-	salt = 'tHeQ/aaj8e4Z9Jj33+xZOQ=='
-
 	def __init__(self, keydata, apply_kdf=False, *args, **kwargs):
 		key = base64.b64decode(keydata)
-		if apply_kdf or len(keydata) != nacl.secret.SecretBox.KEY_SIZE:
-			key = NaClWrapper.kdf(key)
+		if len(key) != nacl.secret.SecretBox.KEY_SIZE:
+			raise NaClWrapperException('keysize must be equal to %d bytes',
+			                           nacl.secret.SecretBox.KEY_SIZE)
 
 		self.box = nacl.secret.SecretBox(key)
 
@@ -30,12 +35,4 @@ class NaClWrapper(CryptoWrapper):
 
 	@staticmethod
 	def createKey():
-		return base64.b64encode(nacl.utils.random(nacl.secret.SecretBox.KEY_SIZE))
-
-	@staticmethod
-	def kdf(password):
-		return nacl.pwhash.argon2i.kdf(nacl.secret.SecretBox.KEY_SIZE,
-		                               password.encode(),
-		                               base64.b64decode(NaClWrapper.salt),
-		                               opslimit=nacl.pwhash.argon2i.OPSLIMIT_MIN,
-		                               memlimit=nacl.pwhash.argon2i.MEMLIMIT_MIN)
+		return base64.b64encode(nacl.utils.random(nacl.secret.SecretBox.KEY_SIZE)).decode()
