@@ -12,9 +12,13 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': ':memory:',
-    },
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'nacl',
+        'USER': 'nacl',
+        'PASSWORD': 'HLmbLQHRuTEDFUkD',
+        'HOST': '127.0.0.1',
+        'PORT': 5432
+    }
 }
 
 # SECURITY WARNING: keep the secret key used in production secret!
